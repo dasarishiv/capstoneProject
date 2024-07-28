@@ -6,6 +6,10 @@ const productSchema = new mongoose.Schema({
     required: [true, "A product must have a name"],
     unique: true
   },
+  sortDescription: {
+    type: String,
+    required: [true, "A product must have a short description"]
+  },
   description: {
     type: String,
     required: [true, "A product must have a description"]

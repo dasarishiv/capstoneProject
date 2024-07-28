@@ -4,8 +4,9 @@ const reviewRouter = express.Router();
 const reviewModel = require("../models/reviewModel");
 const { protectRoute } = require("../controllers/authController");
 const productModel = require("../models/productModel");
+const { checkInput } = require("../utils/crudFactory");
 
-reviewRouter.post("/:productId", protectRoute, async (req, res) => {
+reviewRouter.post("/:productId", protectRoute, checkInput, async (req, res) => {
   /**
    * get the product id from params
    * get the user id from req.userId
@@ -17,7 +18,8 @@ reviewRouter.post("/:productId", protectRoute, async (req, res) => {
   try {
     const userId = req.userId;
     const productId = req.params.productId;
-    const { review, rating } = req.body; // rating: 3
+    let { review, rating } = req.body; // rating: 3
+    rating = parseInt(rating);
 
     const reviewObj = await reviewModel.create({
       review,
@@ -34,7 +36,7 @@ reviewRouter.post("/:productId", protectRoute, async (req, res) => {
       const finalRating = (sum + rating) / (productObj.reviews.length + 1); // (5 + 3) / 2
       productObj.averageRating = finalRating; // 4
     } else {
-      productObj.averageRating = rating;
+      productObj.averageRating = Math.round(rating, 0);
     }
     productObj.reviews.push(reviewObj._id);
 

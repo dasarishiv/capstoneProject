@@ -1,3 +1,5 @@
+const Product = require("../models/productModel");
+
 const checkInput = function (req, res, next) {
   const details = req.body;
   const isEmpty = Object.keys(details).length === 0;
@@ -102,18 +104,26 @@ function createFactory(elementModel) {
 }
 
 function getElementByIdFactory(elementModel) {
+  console.log("elementModel calling::", elementModel);
   return async function (req, res) {
     try {
       //all params value will
       const { id } = req.params;
       // console.log("id::", id);
 
-      const data = await elementModel.findById(id);
-
-      // const _userData = User.find((user) => user.id == id);
-
-      // console.log(_userData);
+      let data = null;
+      if (elementModel === Product) {
+        data = await elementModel
+          .findById(id)
+          .populate("reviews")
+          .populate({ path: "images", select: "url" });
+      } else {
+        data = await elementModel.findById(id);
+      }
       if (data) {
+        // const _userData = User.find((user) => user.id == id);
+
+        // console.log(_userData);
         res.json({
           status: 200,
           data,

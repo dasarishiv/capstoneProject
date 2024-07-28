@@ -19,10 +19,16 @@ const signupHandler = async function (req, res) {
     const userObject = req.body;
     //   data -> req.body
     let newUser = await UserModel.create(userObject);
+    // console.log(newUser, "newUser");
     // send a response
     res.status(201).json({
       message: "user created successfully",
-      user: newUser,
+      user: {
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        _id: newUser._id
+      },
       status: "success"
     });
   } catch (err) {
@@ -108,14 +114,14 @@ const forgetPassword = async (req, res) => {
         message: "user not found"
       });
     } else {
-      const OTP = otpGenerator();
+      const token = otpGenerator();
       console.log("token", token);
-      user.OTP = token;
+      user.token = token;
       user.otpExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes
       console.log("updated user", user);
       await user.save();
       // send email to user
-      emailBuilder(user.email, "Reset Password", `Your OTP is ${OTP}`)
+      emailBuilder(user.email, "Reset Password", `Your OTP is ${token}`)
         .then(() => {
           console.log("email sent successfully");
           res.status(200).json({
@@ -137,7 +143,7 @@ const resetPassword = async (req, res) => {
   try {
     // 1. get token from req.body
     // 2. get password from req.body
-    const { otp, password, email } = req.body;
+    const { token, password, email } = req.body;
     const { userId } = req.params;
     const user = await UserModel.findById(userId);
     if (!user) {
@@ -147,7 +153,7 @@ const resetPassword = async (req, res) => {
       });
     } else {
       // 3. verify the validity of token
-      if (user.otp !== otp) {
+      if (user.token !== token) {
         return res.status(400).json({
           status: "fail",
           message: "invalid token"
@@ -162,7 +168,7 @@ const resetPassword = async (req, res) => {
         } else {
           // 4. update password in database
           user.password = password;
-          user.otp = undefined;
+          user.token = undefined;
           user.otpExpiry = undefined;
           await user.save();
           res.status(200).json({
@@ -185,6 +191,7 @@ const protectRoute = async (req, res, next) => {
   // if user exists then call next
   try {
     const token = req.cookies.token;
+    console.log(token, "token");
     const decoded = jwt.verify(token, JWT_SECRET);
     if (decoded) {
       const userId = decoded.id;
@@ -238,6 +245,7 @@ const isAuthorized = (allowedRoles) =>
   };
 
 const logoutHandler = async (req, res) => {
+  console.log("logoutHandler calling");
   res.clearCookie("token");
   res.status(200).json({
     status: "success",

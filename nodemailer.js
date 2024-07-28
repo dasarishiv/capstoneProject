@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "ayush.raj.sd@@gmail.com",
+    user: "dasarishiv@@gmail.com",
     pass: process.env.PASSWORD
   }
 });
@@ -100,7 +100,7 @@ const options = {
 async function emailBuilder(to, subject, text) {
   try {
     const options = {
-      from: "ayush.raj.sd@gmail.com",
+      from: "dasarishiv@gmail.com",
       to: to,
       subject: subject,
       text: text,
