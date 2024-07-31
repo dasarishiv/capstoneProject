@@ -88,8 +88,30 @@ bookingRouter.post("/:productId", protectRoute, async (req, res) => {
 
 bookingRouter.get("/", protectRoute, async (req, res) => {
   try {
+    const { userId } = req;
+
     const allBookings = await bookingModel
       .find()
+      // .populate('user')
+      // .populate('product');
+      .populate({ path: "user", select: "name email" })
+      .populate({ path: "product", select: "name price" });
+    res.status(200).json({
+      message: "got all bookings",
+      data: allBookings
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
+bookingRouter.get("/:userId", protectRoute, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const allBookings = await bookingModel
+      // .find()
+      .find({ user: userId })
       // .populate('user')
       // .populate('product');
       .populate({ path: "user", select: "name email" })

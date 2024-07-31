@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { validProductCategories } = require("../utils/constants");
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -60,12 +61,7 @@ const productSchema = new mongoose.Schema({
     max: 5
   }
 });
-const validProductCategories = [
-  "electronics",
-  "stationery",
-  "clothing",
-  "furniture"
-];
+
 productSchema.pre("save", function (next) {
   // cehck if there is any category which is not a valid
   // in case there is a invalid -> throw error

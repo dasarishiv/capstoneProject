@@ -6,6 +6,7 @@ const {
   deleteElementByIdFactory,
   updateElementByIdFactory
 } = require("../utils/crudFactory");
+const { validProductCategories } = require("../utils/constants");
 
 //file storage
 const multer = require("multer");
@@ -132,7 +133,7 @@ const deleteProductByIdHandler = deleteElementByIdFactory(Product);
 const getProductCategories = async (req, res) => {
   res.json({
     message: "success",
-    data: ["electronics", "men's clothing", "women's clothing", "jewelery"]
+    data: validProductCategories
   });
 };
 

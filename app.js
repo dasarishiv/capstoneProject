@@ -76,24 +76,36 @@ let room;
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-  socket.emit("message", `message from server ${socket.id}`);
+  // socket.emit("message", `Welcome to E-Cap support ${socket.id}`);
+  socket.emit("message", `Welcome to E-Cap support`);
 
-  interval = setInterval(() => {
-    socket.emit(
-      "message",
-      "message from server" + "-" + socket.id + "at" + new Date()
-    );
-  }, 2000);
+  // interval = setInterval(() => {
+  //   socket.emit(
+  //     "message",
+  //     "message from server" + "-" + socket.id + "at" + new Date()
+  //   );
+  // }, 2000);
 
   // disconnect event is fired when a user disconnects
   socket.on("disconnect", () => {
     console.log("user disconnected " + socket.id);
     clearInterval(interval);
   });
-
+  const messageBank = [
+    "Hello! How can I help you today?",
+    "Sure, could you please provide your order ID?",
+    "Thank you! Let me check the status for you.",
+    "Your order is on its way and should arrive by tomorrow.",
+    "You're welcome! Is there anything else I can assist you with?",
+    "Sure, please provide the product name or ID."
+  ];
   // message event is fired when a user sends a message
   socket.on("message", (data) => {
-    socket.broadcast.emit("broadcast", data);
+    // console.log("message: recived::" + data);
+    const randomIndex = Math.floor(Math.random() * messageBank.length);
+
+    socket.emit("message", messageBank[randomIndex]);
+    // socket.broadcast.emit("broadcast", data);
   });
 
   /** listen to create grp */
