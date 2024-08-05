@@ -45,15 +45,15 @@ app.post("/checkout", (req, res) => {
 
 app.post("/verify", (req, res) => {
   try {
-    console.log("web hook called");
-    console.log(process.env.WEBHOOK_SECRET); // same secret key which we have used in razorpay dashboard
+    // console.log("web hook called");
+    // console.log(process.env.WEBHOOK_SECRET); // same secret key which we have used in razorpay dashboard
     const shasum = crypto.createHmac("sha256", process.env.WEBHOOK_SECRET);
     shasum.update(JSON.stringify(req.body));
     const freshSignature = shasum.digest("hex");
-    console.log("server based signature", freshSignature);
-    console.log("reh headers", req.headers);
+    // console.log("server based signature", freshSignature);
+    // console.log("reh headers", req.headers);
     if (freshSignature === req.headers["x-razorpay-signature"]) {
-      console.log("request is legit");
+      // console.log("request is legit");
       res.json({ status: "ok" });
     } else {
       res.status(401).json({ status: "invalid request" });
