@@ -51,7 +51,7 @@ app.use(
 );
 
 const corsConfig = {
-  origin: true,
+  origin: process.env.FE_URL,
   credentials: true
 };
 // this is allowing all the requests
