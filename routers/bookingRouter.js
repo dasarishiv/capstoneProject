@@ -106,7 +106,8 @@ bookingRouter.get("/", protectRoute, async (req, res) => {
     });
   }
 });
-bookingRouter.get("/:userId", protectRoute, async (req, res) => {
+
+bookingRouter.get("/user/:userId", protectRoute, async (req, res) => {
   try {
     const { userId } = req.params;
     const allBookings = await bookingModel
