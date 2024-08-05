@@ -95,7 +95,8 @@ bookingRouter.get("/", protectRoute, async (req, res) => {
       // .populate('user')
       // .populate('product');
       .populate({ path: "user", select: "name email" })
-      .populate({ path: "product", select: "name price" });
+      .populate({ path: "product", select: "name price" })
+      .sort({ bookedAt: -1 });
     res.status(200).json({
       message: "got all bookings",
       data: allBookings
@@ -116,7 +117,8 @@ bookingRouter.get("/user/:userId", protectRoute, async (req, res) => {
       // .populate('user')
       // .populate('product');
       .populate({ path: "user", select: "name email" })
-      .populate({ path: "product", select: "name price" });
+      .populate({ path: "product", select: "name price" })
+      .sort({ bookedAt: -1 });
     res.status(200).json({
       message: "got all bookings",
       data: allBookings
